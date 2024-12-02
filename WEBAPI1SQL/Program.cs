@@ -1,4 +1,3 @@
-
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using WEBAPI1SQL.Services;
@@ -10,16 +9,13 @@ namespace WEBAPI1SQL
 {
     public class Program
     {
-        public static void Main(string[] args, OpenApiSecurityScheme openApiSecurityScheme)
+        public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
 
             builder.Services.AddControllers();
-            builder.Services.AddTransient<IEmployeeRepository, SQLEmployeeRepository>();
-            builder.Services.AddDbContextPool<Appdbcontext>(option => option.UseSqlServer(builder.Configuration.GetConnectionString("EmployeeDBConnection")));
-
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(options =>
@@ -36,23 +32,22 @@ namespace WEBAPI1SQL
     options.AddSecurityRequirement(new OpenApiSecurityRequirement
 
     {
-        { 
-        new OpenApiSecurityScheme
-        {
-            Reference = new OpenApiReference
-            {
-                Type = ReferenceType.SecurityScheme,
-                Id = JwtBearerDefaults.AuthenticationScheme
-            }
-        }, new string[] { }
+                    {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = JwtBearerDefaults.AuthenticationScheme
+                        }
+                    }, new string[] { }
 
-        }
+                    }
      });
- });
+});
+            builder.Services.AddTransient<IEmployeeRepository, SQLEmployeeRepository>();
+            builder.Services.AddDbContextPool<Appdbcontext>(option => option.UseSqlServer(builder.Configuration.GetConnectionString("EmployeeDBConnection")));
 
-           
-
-           
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
